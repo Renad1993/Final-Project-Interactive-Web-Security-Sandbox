@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ghurir</title>
+  <meta name="description" content="Three interactive labs. Press a payload, see the bug, switch to the fix.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">Ghurir<span>.</span></a>
+      <nav class="nav" aria-label="Main">
+        <a href="index.html" aria-current="page">Home</a>
+        
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>Same payload.<br>Two different endings.</h1>
+      <p class="lead">Press a payload on the vulnerable code and see the damage. Switch to the fix and watch it fail.</p>
+
+      <div class="split" aria-label="Vulnerable versus fixed">
+        <div class="half v">
+          <span class="label">VULNERABLE</span>
+          <span class="chip">&#9656; payload</span>
+          <span class="result"><span class="dot">&#10005;</span>Attack worked</span>
+        </div>
+        <div class="half f">
+          <span class="label">FIXED</span>
+          <span class="chip">&#9656; same payload</span>
+          <span class="result"><span class="dot">&#10003;</span>Blocked</span>
+        </div>
+      </div>
+
+      <div class="cta"><a class="btn" href="#labs">Start a lab</a></div>
+    </section>
+
+    <section aria-labelledby="how">
+      <h2 id="how">How each lab works</h2>
+      <div class="steps">
+        <div class="step">
+          <h3>Read the line</h3>
+          <p>Spot the one line that causes the bug.</p>
+        </div>
+        <div class="step">
+          <h3>Press a payload</h3>
+          <p>Run the attack in a safe simulation.</p>
+        </div>
+        <div class="step">
+          <h3>Switch to Fixed</h3>
+          <p>Same payload. Now it gets blocked.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="labs" aria-labelledby="labs-title">
+      <h2 id="labs-title">The labs</h2>
+      <div class="cards">
+
+        <!-- TODO: owner of Lab 1 fills title, summary, badges -->
+        <a class="card" href="lab1.html">
+          <span class="lab-no">LAB 1</span>
+          <h3>Vulnerability name</h3>
+          <p>One short sentence about this bug.</p>
+          <div class="badges">
+            <span class="badge owasp">OWASP A0X</span>
+            <span class="badge cwe">CWE-XXX</span>
+          </div>
+          <span class="open">Open lab &rarr;</span>
+        </a>
+
+        <a class="card" href="lab2.html">
+          <span class="lab-no">LAB 2</span>
+          <h3>Prototype pollution</h3>
+          <p>Merging untrusted data can quietly change every object in the app.</p>
+          <div class="badges">
+            <span class="badge owasp">OWASP A08</span>
+            <span class="badge cwe">CWE-1321</span>
+          </div>
+          <span class="open">Open lab &rarr;</span>
+        </a>
+
+        <!-- TODO: owner of Lab 3 fills title, summary, badges -->
+        <a class="card" href="lab3.html">
+          <span class="lab-no">LAB 3</span>
+          <h3>Vulnerability name</h3>
+          <p>One short sentence about this bug.</p>
+          <div class="badges">
+            <span class="badge owasp">OWASP A0X</span>
+            <span class="badge cwe">CWE-XXX</span>
+          </div>
+          <span class="open">Open lab &rarr;</span>
+        </a>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">All demos are simulations. Nothing here attacks a real site or uses real data.</div>
+  </footer>
+
+</body>
+</html>
