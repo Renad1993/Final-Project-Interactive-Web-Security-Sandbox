@@ -1,0 +1,268 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Lab 3 - Web Cache Poisoning</title>
+
+    <!-- Main shared design -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Shared lab design -->
+    <link rel="stylesheet" href="lab.css">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="wrap">
+            <a class="brand" href="index.html">
+                Ghurir<span>.</span>
+            </a>
+
+            <nav class="nav" aria-label="Main">
+                <a href="index.html">Home</a>
+                <a href="lab.html">Lab</a>
+                <a href="lab1.html">Lab 1</a>
+                <a href="lab3.html" aria-current="page">Lab 3</a>
+            </nav>
+        </div>
+    </header>
+
+
+    <main class="wrap">
+
+        <!-- Lab Title -->
+        <section class="lab-hero">
+            <h1>Web Cache Poisoning</h1>
+
+            <p>
+                Learn how an attacker can manipulate cached responses
+                and cause other visitors to receive unexpected content.
+            </p>
+
+            <div class="badges">
+                <span>OWASP</span>
+                <span>CWE-436</span>
+                <span>CAPEC-141</span>
+            </div>
+        </section>
+
+
+        <!-- What is it -->
+        <section class="panel">
+            <h2>01. What Is Web Cache Poisoning?</h2>
+
+            <p>
+                Web Cache Poisoning happens when an application stores
+                an incorrect response in its cache.
+            </p>
+
+            <p>
+                Another visitor may receive the poisoned response
+                instead of the original safe page.
+            </p>
+        </section>
+
+
+        <!-- Vulnerable and Fixed Code -->
+        <section class="panel">
+            <h2>02. Vulnerable vs Fixed</h2>
+
+            <div class="cols">
+
+                <div>
+                    <h3 class="lbl">VULNERABLE CODE</h3>
+
+                    <pre class="code v"><div>const host = request.headers</div><div class="hl">    ["X-Forwarded-Host"];</div><div>const page = createPage(host);</div><div>cache.set("/home", page);</div></pre>
+
+                    <p class="note">
+                        <b>Problem:</b>
+                        The application trusts an untrusted host value.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="lbl">FIXED CODE</h3>
+
+                    <pre class="code f"><div>const host = TRUSTED_HOST;</div><div class="hl">const page = createPage(host);</div><div>cache.set("/home", page);</div></pre>
+
+                    <p class="note">
+                        <b>Solution:</b>
+                        The application uses a trusted host.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- Interactive Demo -->
+        <section class="panel">
+            <h2>03. Try It Yourself</h2>
+
+            <p>
+                Switch between vulnerable and fixed modes,
+                then test the same example.
+            </p>
+
+            <div class="switch">
+                <button id="vulnerableBtn" class="v on" type="button">
+                    Vulnerable
+                </button>
+
+                <button id="fixedBtn" class="f" type="button">
+                    Fixed
+                </button>
+            </div>
+
+
+            <!-- Status -->
+            <div id="statusBox" class="out">
+                <span id="statusTitle" class="status">
+                    VULNERABLE MODE
+                </span>
+
+                <p id="statusText">
+                    The application is using an untrusted host value.
+                </p>
+            </div>
+
+
+            <!-- Payloads -->
+            <div class="cols">
+
+                <div>
+                    <h3 class="lbl">SELECT AN EXAMPLE</h3>
+
+                    <button class="pl" type="button"
+                        data-host="attacker.example">
+                        <small>Payload 01</small>
+                        attacker.example
+                    </button>
+
+                    <button class="pl" type="button"
+                        data-host="fake-store.example">
+                        <small>Payload 02</small>
+                        fake-store.example
+                    </button>
+
+                    <button class="pl" type="button"
+                        data-host="untrusted.example">
+                        <small>Payload 03</small>
+                        untrusted.example
+                    </button>
+
+                    <p class="note">
+                        Selected value:
+                        <code id="payloadCode">attacker.example</code>
+                    </p>
+
+                    <button id="runBtn" class="pl" type="button">
+                        Run Example
+                    </button>
+
+                    <button id="visitorBtn" class="pl" type="button">
+                        Simulate Another Visitor
+                    </button>
+
+                    <button id="resetBtn" class="pl" type="button">
+                        Reset
+                    </button>
+                </div>
+
+
+                <!-- Result -->
+                <div>
+                    <h3 class="lbl">RESULT</h3>
+
+                    <div id="resultMessage" class="out">
+                        <span class="status">WAITING</span>
+                        <p>Run an example to see the result.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- Website Preview -->
+        <section class="panel">
+            <h2>04. Website Preview</h2>
+
+            <p>
+                This preview shows the website content returned
+                by the cache simulation.
+            </p>
+
+            <div class="out">
+                <span class="status">WEBSITE PREVIEW</span>
+
+                <div id="domainBanner">
+                    <h3>TechStore</h3>
+                    <p>Welcome to the official TechStore website.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Why it matters -->
+        <section class="panel">
+            <h2>05. Why Does It Matter?</h2>
+
+            <p>
+                If a poisoned response is stored in the cache,
+                other visitors may receive incorrect or manipulated content.
+            </p>
+        </section>
+
+
+        <!-- The Fix -->
+        <section class="panel">
+            <h2>06. How to Prevent It</h2>
+
+            <p>
+                Use trusted host values and validate request headers.
+                Do not allow untrusted input to control cached responses.
+            </p>
+        </section>
+
+
+        <!-- Sources -->
+        <section class="panel sources">
+            <h2>07. Sources</h2>
+
+            <p>
+                <a href="https://portswigger.net/web-security/web-cache-poisoning"
+                   target="_blank" rel="noopener">
+                    PortSwigger - Web Cache Poisoning
+                </a>
+            </p>
+
+            <p>
+                <a href="https://owasp.org/"
+                   target="_blank" rel="noopener">
+                    OWASP
+                </a>
+            </p>
+        </section>
+
+    </main>
+
+
+    <footer class="wrap">
+        <p>Ghurir. — Interactive Web Security Sandbox</p>
+    </footer>
+
+
+    <!-- Lab 3 JavaScript -->
+    <script src="js/lab3.js" defer></script>
+
+</body>
+</html>
