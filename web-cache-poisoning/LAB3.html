@@ -1,0 +1,380 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Web Cache Poisoning Lab</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="main-header">
+        <div class="wrap">
+            <p class="eyebrow">CYBERSECURITY LAB / 01</p>
+            <h1>Web Cache Poisoning</h1>
+            <p class="lead">
+                Understand the vulnerability through an interactive demonstration.
+            </p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- Vulnerability Introduction -->
+        <section class="intro panel">
+
+            <p class="section-tag">01 / UNDERSTAND</p>
+
+            <h2>What is Web Cache Poisoning?</h2>
+
+            <p>
+                Web Cache Poisoning is a vulnerability that occurs when a website
+                stores a manipulated response in its cache. This can happen when
+                the cache does not correctly consider all the request information
+                that affects the response.
+            </p>
+
+            <h3>How does it happen?</h3>
+
+            <p>
+                An application may use an HTTP header, such as
+                <strong>X-Forwarded-Host</strong>, to generate a response.
+                If the cache ignores that header when identifying cached content,
+                an unexpected response may be stored and served to other visitors.
+            </p>
+
+            <h3>Why is it dangerous?</h3>
+
+            <p>
+                Visitors may receive manipulated content instead of the expected
+                website content. Depending on the application, this can cause
+                misleading pages, incorrect links, or other security problems.
+            </p>
+
+            <div class="classification">
+
+                <div class="class-card owasp-card">
+                    <strong>OWASP</strong>
+                    <span>A06:2025 – Insecure Design</span>
+                </div>
+
+                <div class="class-card cwe-card">
+                    <strong>CWE</strong>
+                    <span>CWE-436 – Interpretation Conflict</span>
+                </div>
+
+                <div class="class-card capec-card">
+                    <strong>CAPEC</strong>
+                    <span>CAPEC-141 – Cache Poisoning</span>
+                </div>
+
+            </div>
+
+            <p class="note">
+                Note: These classifications are related references.
+                The exact classification depends on the vulnerability scenario.
+            </p>
+
+        </section>
+
+
+        <!-- Code Explanation Section -->
+        <section class="code-comparison panel">
+
+            <p class="section-tag">02 / CODE ANALYSIS</p>
+
+            <h2>Vulnerable Code vs Fixed Code</h2>
+
+            <p class="code-intro">
+                Compare the vulnerable implementation with the secure version
+                to understand how the issue is introduced and fixed.
+            </p>
+
+            <div class="code-grid">
+
+                <!-- Vulnerable Code -->
+                <div class="code-card vulnerable-code">
+
+                    <div class="code-heading">
+                        <span class="code-indicator">01</span>
+                        <h3>Vulnerable Code</h3>
+                        <span class="code-label">VULNERABLE</span>
+                    </div>
+
+                    <p>
+                        The application uses an untrusted HTTP header to generate
+                        a response, but the cache key does not account for that header.
+                    </p>
+
+                    <pre><code>const cache = new Map();
+
+function getPage(request) {
+
+  const host =
+    request.headers["x-forwarded-host"];
+
+  const cacheKey = "/home";
+
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey);
+  }
+
+  const response = {
+    website: host
+  };
+
+  cache.set(cacheKey, response);
+
+  return response;
+}</code></pre>
+
+                    <div class="code-explanation">
+                        <strong>Problem:</strong>
+                        <p>
+                            The cache uses the same key for different host values.
+                            This can cause a manipulated response to be reused
+                            for other visitors.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <!-- Fixed Code -->
+                <div class="code-card fixed-code">
+
+                    <div class="code-heading">
+                        <span class="code-indicator">02</span>
+                        <h3>Fixed Code</h3>
+                        <span class="code-label">FIXED</span>
+                    </div>
+
+                    <p>
+                        The application uses a trusted host instead of accepting
+                        an untrusted host value from the request.
+                    </p>
+
+                    <pre><code>const cache = new Map();
+
+const TRUSTED_HOST =
+  "techstore.example";
+
+function getPage(request) {
+
+  const host = TRUSTED_HOST;
+
+  const cacheKey = "/home|" + host;
+
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey);
+  }
+
+  const response = {
+    website: host
+  };
+
+  cache.set(cacheKey, response);
+
+  return response;
+}</code></pre>
+
+                    <div class="code-explanation">
+                        <strong>Solution:</strong>
+                        <p>
+                            The application uses a trusted host and a consistent
+                            cache key, preventing an untrusted header from
+                            controlling the generated response.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="code-note">
+                <strong>KEY DIFFERENCE:</strong>
+                The vulnerable version trusts an untrusted header.
+                The fixed version uses a trusted host value.
+            </div>
+
+        </section>
+
+
+        <!-- Interactive Demonstration -->
+        <section class="lab panel">
+
+            <p class="section-tag">03 / TRY IT</p>
+
+            <h2>Interactive Demonstration</h2>
+
+            <p class="lab-description">
+                Switch between the vulnerable and fixed versions, then try a payload.
+            </p>
+
+
+            <!-- Mode Buttons -->
+            <div class="mode-buttons">
+
+                <button id="vulnerableBtn"
+                        class="mode-btn vulnerable active">
+                    Vulnerable Version
+                </button>
+
+                <button id="fixedBtn"
+                        class="mode-btn fixed">
+                    Fixed Version
+                </button>
+
+            </div>
+
+
+            <!-- Status -->
+            <div id="statusBox" class="status vulnerable-status">
+
+                <strong id="statusTitle">VULNERABLE MODE</strong>
+
+                <p id="statusText">
+                    The application trusts an untrusted host value.
+                </p>
+
+            </div>
+
+
+            <!-- Payload Area -->
+            <div class="payload-section">
+
+                <h3>Choose a Payload</h3>
+
+                <p>Simulated HTTP Header:</p>
+
+                <div class="header-box">
+                    <span>X-Forwarded-Host:</span>
+                    <strong id="payloadCode">attacker.example</strong>
+                </div>
+
+
+                <div class="payload-buttons">
+
+                    <button class="payload-btn"
+                            data-host="attacker.example">
+                        Payload 1
+                    </button>
+
+                    <button class="payload-btn"
+                            data-host="fake-store.example">
+                        Payload 2
+                    </button>
+
+                    <button class="payload-btn"
+                            data-host="untrusted.example">
+                        Payload 3
+                    </button>
+
+                </div>
+
+
+                <div class="action-buttons">
+
+                    <button id="runBtn" class="run-btn">
+                        Run Payload
+                    </button>
+
+                    <button id="visitorBtn" class="visitor-btn">
+                        Simulate Another Visitor
+                    </button>
+
+                    <button id="resetBtn" class="reset-btn">
+                        Reset Cache
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Website Preview -->
+            <div class="result-section">
+
+                <h3>Website Preview</h3>
+
+                <div class="store-page">
+
+                    <div class="store-header">
+                        <h2>TECH STORE</h2>
+                        <span>ONLINE SHOPPING</span>
+                    </div>
+
+                    <div class="offer">
+                        <p class="offer-label">SPECIAL OFFER</p>
+                        <h3>Find Your Next Favorite Product!</h3>
+                        <p>Discover great deals at Tech Store.</p>
+                    </div>
+
+                    <div id="domainBanner" class="domain-banner">
+                        Official Website: techstore.example
+                    </div>
+
+                    <div id="resultMessage" class="result-message">
+                        Waiting for payload...
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Sources -->
+        <section class="sources panel">
+
+            <p class="section-tag">04 / LEARN MORE</p>
+
+            <h2>References</h2>
+
+            <ul>
+                <li>
+                    <a href="https://portswigger.net/web-security/web-cache-poisoning"
+                       target="_blank" rel="noopener noreferrer">
+                        PortSwigger – Web Cache Poisoning
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://cwe.mitre.org/data/definitions/436.html"
+                       target="_blank" rel="noopener noreferrer">
+                        MITRE – CWE-436
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://top10.owasp.org/2025/A06_2025-Insecure_Design/"
+                       target="_blank" rel="noopener noreferrer">
+                        OWASP – A06:2025 Insecure Design
+                    </a>
+                </li>
+            </ul>
+
+        </section>
+
+    </main>
+
+
+    <footer class="site-footer">
+        <p>CYBERSECURITY INTERACTIVE LAB</p>
+        <p>Educational simulation only</p>
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
