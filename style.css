@@ -7,8 +7,8 @@
   --muted: #b9aedf;
   --line: #7a5cff;
 
-  --brand: #ffd23f;       /* yellow: buttons, active nav */
-  --accent: #ff4d6d;      /* pink: logo dot */
+  --brand: #ffd23f;       
+  --accent: #ff4d6d;      
 
   --vuln: #ff5d73;
   --vuln-bg: #3a1030;
@@ -55,8 +55,7 @@ a { color: inherit; text-decoration: none; }
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 
-/* ---------- Header / nav ---------- */
-.site-header { border-bottom: var(--bw) solid var(--line); }
+
 
 .site-header .wrap {
   display: flex;
@@ -88,7 +87,7 @@ a { color: inherit; text-decoration: none; }
   border-color: var(--brand);
 }
 
-/* ---------- Hero ---------- */
+
 .hero { text-align: center; padding-block: 40px 8px; }
 
 h1 {
@@ -107,7 +106,7 @@ h1 {
   font-size: 17px;
 }
 
-/* Vulnerable vs Fixed split (reusable on lab pages) */
+
 .split {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -174,7 +173,7 @@ h1 {
 }
 .btn:hover { transform: translate(4px, 4px); box-shadow: none; }
 
-/* ---------- Sections ---------- */
+
 h2 {
   font-family: var(--font-head);
   font-size: 16px;
@@ -202,7 +201,7 @@ h2 {
 .step h3 { margin: 0 0 6px; font-family: var(--font-head); font-size: 12px; line-height: 1.5; }
 .step p  { margin: 0; color: var(--muted); font-size: 14px; }
 
-/* ---------- Lab cards ---------- */
+
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 
 .card {
@@ -239,7 +238,7 @@ h2 {
 
 .open { font-size: 14px; font-weight: 700; color: var(--brand); }
 
-/* ---------- Footer ---------- */
+
 .site-footer {
   margin-top: 56px;
   padding-block: 20px;
@@ -249,11 +248,11 @@ h2 {
   text-align: center;
 }
 
-/* ---------- Vulnerable / Fixed page state (for lab pages) ---------- */
+
 .is-vulnerable { --state: var(--vuln);  --state-bg: var(--vuln-bg); }
 .is-fixed      { --state: var(--fixed); --state-bg: var(--fixed-bg); }
 
-/* ---------- Responsive ---------- */
+
 @media (max-width: 720px) {
   .steps, .cards { grid-template-columns: 1fr; }
   .split { grid-template-columns: 1fr; }
@@ -264,3 +263,4 @@ h2 {
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
