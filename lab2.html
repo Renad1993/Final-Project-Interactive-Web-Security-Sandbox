@@ -1,0 +1,405 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Lab 2 | Weak Random Token Generation | Ghurir</title>
+
+  <meta name="description"
+        content="Lab 2: Weak Random Token Generation. Learn how predictable password reset tokens can be exploited and how secure random generation prevents the attack.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="lab.css">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="wrap">
+
+      <a class="brand" href="index.html">
+        Ghurir<span>.</span>
+      </a>
+
+      <nav class="nav" aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="lab1.html">Lab 1</a>
+        <a href="lab2.html" aria-current="page">Lab 2</a>
+        <a href="lab3.html">Lab 3</a>
+      </nav>
+
+    </div>
+  </header>
+
+
+  <main class="wrap">
+
+    <!-- LAB INTRODUCTION -->
+    <section class="lab-hero">
+
+      <h1>Lab 2: Weak Random Token Generation</h1>
+
+      <div class="badges">
+        <span class="badge owasp">OWASP A07:2021</span>
+        <span class="badge cwe">CWE-338</span>
+      </div>
+
+    </section>
+
+
+    <!-- 1. WHAT IT IS -->
+    <section class="panel" aria-labelledby="what">
+
+      <h2 id="what">What it is</h2>
+
+      <p>
+        Applications use random tokens for password reset links,
+        session IDs, invitation codes, and API keys.
+        These tokens must be unpredictable because anyone
+        who obtains a valid token may be able to access
+        a protected function without knowing the user's password.
+      </p>
+
+      <p>
+        A Pseudo-Random Number Generator (PRNG) produces values
+        using a mathematical algorithm, an initial seed,
+        and an internal state.
+        Although the generated values may appear random,
+        a weak generator can produce predictable sequences.
+      </p>
+
+      <p>
+        Weak Random Token Generation occurs when an application
+        uses a predictable random number generator to create
+        security-sensitive tokens instead of a
+        Cryptographically Secure Pseudo-Random Number Generator
+        (CSPRNG).
+      </p>
+
+      <p>
+        If an attacker can recover the generator's internal state,
+        they may be able to calculate future tokens rather
+        than guessing them randomly.
+      </p>
+
+    </section>
+
+
+    <!-- 2. THE LINES -->
+    <section class="panel" aria-labelledby="line">
+
+      <h2 id="line">The lines</h2>
+
+      <pre
+        class="code v"
+        id="code-vuln"
+        aria-label="Vulnerable code"></pre>
+
+      <p class="note">
+        <b>Highlighted:</b>
+        The vulnerable implementation uses a Linear Congruential
+        Generator (LCG). Each new state is calculated from the
+        previous state using a known mathematical formula.
+        When the token directly exposes the internal state,
+        an attacker can calculate the next token.
+      </p>
+
+    </section>
+
+
+    <!-- 3. TRY IT -->
+    <section class="panel" aria-labelledby="try">
+
+      <h2 id="try">Try it</h2>
+
+      <p>
+        This simulation demonstrates how an attacker can
+        predict a victim's password reset token when
+        an application uses a weak random number generator.
+        Compare the vulnerable implementation with
+        the secure version.
+      </p>
+
+      <div class="switch"
+           role="group"
+           aria-label="Code version">
+
+        <button class="v on" type="button">
+          Vulnerable
+        </button>
+
+        <button class="f" type="button">
+          Fixed
+        </button>
+
+      </div>
+
+
+      <div class="cols">
+
+        <!-- ATTACK SIMULATION -->
+        <div>
+
+          <p class="lbl">PASSWORD RESET SIMULATION</p>
+
+          <p>
+            The attacker requests a password reset token
+            for their own account.
+            A second token is then generated for the victim
+            using the same generator.
+          </p>
+
+          <button
+            class="pl"
+            type="button"
+            id="get-token">
+
+            <small>Step 1</small>
+            Get my token
+
+          </button>
+
+
+          <button
+            class="pl"
+            type="button"
+            id="predict-token">
+
+            <small>Step 2</small>
+            Predict victim's next token
+
+          </button>
+
+
+          <button
+            class="pl"
+            type="button"
+            id="use-token">
+
+            <small>Step 3</small>
+            Use the prediction
+
+          </button>
+
+
+          <button
+            class="pl"
+            type="button"
+            id="reset-lab">
+
+            <small>Reset</small>
+            Restart simulation
+
+          </button>
+
+        </div>
+
+
+        <!-- RESULTS -->
+        <div>
+
+          <p class="lbl">RESULT</p>
+
+          <div
+            class="out"
+            id="out"
+            aria-live="polite">
+
+            <p>
+              Select Vulnerable or Fixed, then press
+              "Get my token" to start the simulation.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- 4. WHY IT MATTERS -->
+    <section class="panel" aria-labelledby="why">
+
+      <h2 id="why">Why it matters</h2>
+
+      <p>
+        Predictable password reset tokens can lead to
+        account takeover.
+        An attacker may calculate another user's reset token
+        without knowing their password.
+      </p>
+
+      <p>
+        <b>Attack scenario:</b>
+        The attacker requests a password reset token
+        for their own account and observes the generated value.
+        If the generator is predictable and the next token
+        belongs to the victim, the attacker may calculate
+        that token and use it to reset the victim's password.
+      </p>
+
+      <p>
+        <b>Guessable seeds:</b>
+        Using the current timestamp as a seed can also
+        be dangerous.
+        If an attacker knows approximately when a token
+        was generated, they may only need to test
+        a small range of possible seeds.
+      </p>
+
+      <p>
+        <b>Hashing does not solve predictability:</b>
+        Hashing a predictable value does not automatically
+        make it unpredictable.
+        If an attacker can determine the original input,
+        they can calculate its hash as well.
+      </p>
+
+      <p>
+        <b>Real-world examples:</b>
+        The Debian OpenSSL vulnerability (CVE-2008-0166)
+        reduced the number of possible cryptographic keys.
+        Android's 2013 SecureRandom issue also demonstrated
+        the consequences of weak randomness in
+        security-sensitive operations.
+      </p>
+
+    </section>
+
+
+    <!-- 5. THE FIX -->
+    <section class="panel" aria-labelledby="fix">
+
+      <h2 id="fix">The fix</h2>
+
+      <p>
+        Security-sensitive tokens must be generated using
+        a Cryptographically Secure Pseudo-Random Number
+        Generator (CSPRNG).
+      </p>
+
+      <div class="switch"
+           role="group"
+           aria-label="Code version">
+
+        <button class="v on" type="button">
+          Vulnerable
+        </button>
+
+        <button class="f" type="button">
+          Fixed
+        </button>
+
+      </div>
+
+
+      <pre
+        class="code f"
+        id="code-fix"
+        aria-label="Fixed code"></pre>
+
+
+      <p class="note">
+        <b>Highlighted:</b>
+        The secure implementation uses
+        <code>crypto.getRandomValues()</code>
+        to generate cryptographically secure random bytes
+        instead of calculating tokens from
+        a predictable LCG state.
+      </p>
+
+      <p>
+        Security-sensitive tokens should contain at least
+        128 bits of unpredictable randomness,
+        expire after a limited period,
+        and be valid for only one use.
+      </p>
+
+      <p>
+        Password reset tokens should be stored securely,
+        preferably as hashes, and reset requests
+        should be rate-limited to reduce abuse.
+      </p>
+
+    </section>
+
+
+    <!-- 6. SOURCES -->
+    <section
+      class="panel sources"
+      aria-labelledby="src">
+
+      <h2 id="src">Sources</h2>
+
+      <p>
+
+        <a
+          href="https://cwe.mitre.org/data/definitions/338.html"
+          target="_blank"
+          rel="noopener noreferrer">
+          CWE-338 (MITRE)
+        </a>
+
+        ·
+
+        <a
+          href="https://cwe.mitre.org/data/definitions/335.html"
+          target="_blank"
+          rel="noopener noreferrer">
+          CWE-335 (MITRE)
+        </a>
+
+        ·
+
+        <a
+          href="https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html"
+          target="_blank"
+          rel="noopener noreferrer">
+          OWASP Forgot Password Cheat Sheet
+        </a>
+
+        ·
+
+        <a
+          href="https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues"
+          target="_blank"
+          rel="noopener noreferrer">
+          MDN Crypto.getRandomValues()
+        </a>
+
+      </p>
+
+    </section>
+
+  </main>
+
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+
+    <div class="wrap">
+      All demos are simulations.
+      Nothing here attacks a real site
+      or uses real user data.
+    </div>
+
+  </footer>
+
+
+  <!-- LAB 2 JAVASCRIPT -->
+  <script src="js/lab2.js"></script>
+
+</body>
+</html>
