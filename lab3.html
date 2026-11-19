@@ -31,7 +31,6 @@
 
         <!-- Lab Title -->
         <section class="lab-hero">
-
             <h1>Web Cache Poisoning</h1>
 
             <p>
@@ -44,7 +43,6 @@
                 <span class="badge cwe">CWE-436</span>
                 <span class="badge capec">CAPEC-141</span>
             </div>
-
         </section>
 
         <!-- What Is Web Cache Poisoning -->
@@ -128,30 +126,44 @@
 
             <div class="cols">
 
+                <!-- Vulnerable Code -->
                 <div>
                     <h3 class="lbl">VULNERABLE CODE</h3>
 
-                    <pre class="code v"><div>const host = request.headers</div><div class="hl">    ["X-Forwarded-Host"];</div><div>const page = createPage(host);</div><div>cache.set("/home", page);</div></pre>
+                    <pre class="code v"><code>function vulnerableRequest(host) {
+    <span class="danger-line">const key = "/home";</span>
+    <span class="danger-line">const response = {host: host};</span>
+    <span class="danger-line">cache.set(key, response);</span>
+    return response;
+}</code></pre>
 
                     <p class="note">
                         <b>Problem:</b>
-                        The application trusts an untrusted host value.
+                        The application accepts an untrusted host
+                        and stores it in the cache.
                     </p>
                 </div>
 
+                <!-- Fixed Code -->
                 <div>
                     <h3 class="lbl">FIXED CODE</h3>
 
-                    <pre class="code f"><div>const host = TRUSTED_HOST;</div><div class="hl">const page = createPage(host);</div><div>cache.set("/home", page);</div></pre>
+                    <pre class="code f"><code>function fixedRequest() {
+    <span class="safe-line">const host = TRUSTED_HOST;</span>
+    const key = "/home";
+    const response = {host: host};
+    <span class="safe-line">cache.set(key, response);</span>
+    return response;
+}</code></pre>
 
                     <p class="note">
                         <b>Solution:</b>
-                        The application uses a trusted host.
+                        The application uses a trusted host
+                        instead of an untrusted value.
                     </p>
                 </div>
 
             </div>
-
         </section>
 
         <!-- Interactive Demo -->
@@ -165,7 +177,6 @@
             </p>
 
             <div class="switch">
-
                 <button id="vulnerableBtn" class="v on" type="button">
                     Vulnerable
                 </button>
@@ -173,11 +184,9 @@
                 <button id="fixedBtn" class="f" type="button">
                     Fixed
                 </button>
-
             </div>
 
             <div id="statusBox" class="out mode-status">
-
                 <span id="statusTitle" class="status">
                     VULNERABLE MODE
                 </span>
@@ -185,41 +194,33 @@
                 <p id="statusText">
                     The application trusts an untrusted host value.
                 </p>
-
             </div>
 
             <div class="cols">
 
                 <!-- Payload Selection -->
                 <div>
-
                     <h3 class="lbl">SELECT A PAYLOAD</h3>
 
                     <button class="pl selected"
                             type="button"
                             data-host="attacker.example">
-
                         <small>Payload 01</small>
                         attacker.example
-
                     </button>
 
                     <button class="pl"
                             type="button"
                             data-host="fake-store.example">
-
                         <small>Payload 02</small>
                         fake-store.example
-
                     </button>
 
                     <button class="pl"
                             type="button"
                             data-host="untrusted.example">
-
                         <small>Payload 03</small>
                         untrusted.example
-
                     </button>
 
                     <p class="note">
@@ -238,40 +239,32 @@
                     <button id="resetBtn" class="pl" type="button">
                         Reset
                     </button>
-
                 </div>
 
                 <!-- Result and Website Preview -->
                 <div>
-
                     <h3 class="lbl">RESULT</h3>
 
                     <div id="resultMessage" class="out">
-
                         <span class="status">WAITING</span>
 
                         <p>
                             Run an example to see the result.
                         </p>
-
                     </div>
 
                     <h3 class="lbl">WEBSITE PREVIEW</h3>
 
                     <div id="domainBanner">
-
                         <h3>TechStore</h3>
 
                         <p>
                             Official Website: techstore.example
                         </p>
-
                     </div>
-
                 </div>
 
             </div>
-
         </section>
 
         <!-- Why Does It Matter -->

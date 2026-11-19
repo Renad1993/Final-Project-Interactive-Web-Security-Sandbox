@@ -387,3 +387,22 @@ h2 {
         grid-template-columns: 1fr;
     }
 }
+/* Highlight Vulnerable and Fixed Code Lines */
+
+.danger-line {
+    display: inline;
+    background: var(--vuln-bg);
+    color: var(--vuln);
+    border-left: 4px solid var(--vuln);
+    padding: 5px 8px;
+    margin: 3px 0;
+}
+
+.safe-line {
+    display: inline;
+    background: var(--fixed-bg);
+    color: var(--fixed);
+    border-left: 4px solid var(--fixed);
+    padding: 5px 8px;
+    margin: 3px 0;
+}
