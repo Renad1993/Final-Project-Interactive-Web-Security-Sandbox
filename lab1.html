@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Prototype pollution | Ghurir</title>
+  <title>Prototype pollution </title>
   <meta name="description" content="Lab: prototype pollution. Press a payload, see the bug, switch to the fix.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +15,7 @@
 
   <header class="site-header">
     <div class="wrap">
-      <a class="brand" href="index.html">Ghurir<span>.</span></a>
+      <a class="brand" href="index.html"><span></span></a>
       <nav class="nav" aria-label="Main">
         <a href="index.html">Home</a>
         <a href="lab1.html" aria-current="page">Lab 1</a>
@@ -76,10 +76,11 @@
     </section>
 
     <!-- 5. The fix -->
+
     <section class="panel" aria-labelledby="fix">
       <h2 id="fix">The fix</h2>
       <div class="switch" role="group" aria-label="Code version">
-        <button class="v on" type="button">Vulnerable</button><button class="f" type="button">Fixed</button>
+        <!-- <button class="v on" type="button">Vulnerable</button><button class="f" type="button">Fixed</button>-->
       </div>
       <pre class="code f" id="code-fix" aria-label="Fixed code"></pre>
       <p class="note"><b>Highlighted:</b> the merge now refuses the two keys that lead to the shared template. This switch controls the same version used in “Try it”: select Fixed, press the same payloads, and they are blocked.</p>
