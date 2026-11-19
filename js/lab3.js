@@ -6,9 +6,7 @@ const cache = new Map();
 let mode = "vulnerable";
 let selectedHost = "attacker.example";
 
-
-// Get HTML elements
-
+// HTML Elements
 const vulnerableBtn = document.getElementById("vulnerableBtn");
 const fixedBtn = document.getElementById("fixedBtn");
 
@@ -20,21 +18,27 @@ const payloadCode = document.getElementById("payloadCode");
 const domainBanner = document.getElementById("domainBanner");
 const resultMessage = document.getElementById("resultMessage");
 
-const payloadButtons = document.querySelectorAll(".payload-btn");
+const payloadButtons = document.querySelectorAll(".pl[data-host]");
+
+const runBtn = document.getElementById("runBtn");
+const visitorBtn = document.getElementById("visitorBtn");
+const resetBtn = document.getElementById("resetBtn");
 
 
-// Update Vulnerable / Fixed mode
-
+// Update Mode
 function updateMode() {
 
     const isVulnerable = mode === "vulnerable";
 
     vulnerableBtn.classList.toggle("active", isVulnerable);
+    vulnerableBtn.classList.toggle("on", isVulnerable);
+
     fixedBtn.classList.toggle("active", !isVulnerable);
+    fixedBtn.classList.toggle("on", !isVulnerable);
 
     statusBox.className = isVulnerable
-        ? "status vulnerable-status"
-        : "status fixed-status";
+        ? "out mode-status vulnerable-status"
+        : "out mode-status fixed-status";
 
     statusTitle.textContent = isVulnerable
         ? "VULNERABLE MODE"
@@ -50,24 +54,26 @@ function updateMode() {
 }
 
 
-// Reset website preview
-
+// Reset Preview
 function resetPreview() {
 
-    domainBanner.textContent =
-        "Official Website: " + TRUSTED_HOST;
+    domainBanner.innerHTML = `
+        <h3>TechStore</h3>
+        <p>Official Website: ${TRUSTED_HOST}</p>
+    `;
 
     domainBanner.classList.remove("poisoned");
 
-    resultMessage.textContent = "Waiting for payload...";
+    resultMessage.innerHTML = `
+        <span class="status">WAITING</span>
+        <p>Run a payload to see the result.</p>
+    `;
 }
 
 
-// Vulnerable version
-
+// Vulnerable Request
 function vulnerableRequest(host) {
 
-    // The cache uses the same key for every host.
     const cacheKey = "/home";
 
     if (cache.has(cacheKey)) {
@@ -85,11 +91,9 @@ function vulnerableRequest(host) {
 }
 
 
-// Fixed version
-
+// Fixed Request
 function fixedRequest() {
 
-    // The application uses its trusted host.
     const safeHost = TRUSTED_HOST;
 
     const cacheKey = "/home|" + safeHost;
@@ -109,120 +113,117 @@ function fixedRequest() {
 }
 
 
-// Run selected payload
-
-function runPayload() {
-
-    let response;
-
-    if (mode === "vulnerable") {
-
-        response = vulnerableRequest(selectedHost);
-
-    } else {
-
-        response = fixedRequest();
-
-    }
-
+// Display Result
+function showResult(response) {
 
     if (response.poisoned) {
 
-        domainBanner.textContent =
-            "Unexpected Website Host: " + response.host;
+        domainBanner.innerHTML = `
+            <h3>Unexpected Website!</h3>
+            <p>Host: ${response.host}</p>
+            <p>Cached content was manipulated.</p>
+        `;
 
         domainBanner.classList.add("poisoned");
 
-        resultMessage.textContent =
-            "Cache Poisoned! The manipulated response was stored.";
+        resultMessage.innerHTML = `
+            <span class="status">CACHE POISONED!</span>
+            <p>The manipulated response was stored in the cache.</p>
+        `;
 
     } else {
 
-        domainBanner.textContent =
-            "Official Website: " + TRUSTED_HOST;
+        domainBanner.innerHTML = `
+            <h3>TechStore</h3>
+            <p>Official Website: ${TRUSTED_HOST}</p>
+        `;
 
         domainBanner.classList.remove("poisoned");
 
-        resultMessage.textContent =
-            mode === "fixed"
-                ? "Blocked! The untrusted host was ignored."
-                : "The official response was returned.";
-
+        resultMessage.innerHTML = mode === "fixed"
+            ? `
+                <span class="status">BLOCKED!</span>
+                <p>The untrusted host was ignored. The official website is safe.</p>
+            `
+            : `
+                <span class="status">SAFE RESPONSE</span>
+                <p>The official website was returned.</p>
+            `;
     }
-
 }
 
 
-// Simulate another visitor
+// Run Selected Payload
+function runPayload() {
 
+    // Start a fresh test for every selected payload
+    cache.clear();
+
+    const response = mode === "vulnerable"
+        ? vulnerableRequest(selectedHost)
+        : fixedRequest();
+
+    showResult(response);
+}
+
+
+// Test Another Visitor
 function simulateVisitor() {
 
     const cacheKey = mode === "vulnerable"
         ? "/home"
         : "/home|" + TRUSTED_HOST;
 
-
     if (!cache.has(cacheKey)) {
 
-        resultMessage.textContent =
-            "No cached response yet. Run a payload first.";
+        resultMessage.innerHTML = `
+            <span class="status">NO CACHE</span>
+            <p>Run a payload first.</p>
+        `;
 
         return;
     }
 
-
     const response = cache.get(cacheKey);
 
+    showResult(response);
 
     if (response.poisoned) {
 
-        domainBanner.textContent =
-            "Unexpected Website Host: " + response.host;
-
-        domainBanner.classList.add("poisoned");
-
-        resultMessage.textContent =
-            "Another visitor received the manipulated cached response!";
+        resultMessage.innerHTML = `
+            <span class="status">ANOTHER VISITOR AFFECTED!</span>
+            <p>Another visitor received the manipulated cached response.</p>
+        `;
 
     } else {
 
-        domainBanner.textContent =
-            "Official Website: " + TRUSTED_HOST;
-
-        domainBanner.classList.remove("poisoned");
-
-        resultMessage.textContent =
-            "Another visitor received the safe cached response.";
-
+        resultMessage.innerHTML = `
+            <span class="status">SAFE VISITOR</span>
+            <p>Another visitor received the official cached website.</p>
+        `;
     }
-
 }
 
 
-// Switch to Vulnerable mode
-
+// Vulnerable Button
 vulnerableBtn.addEventListener("click", () => {
 
     mode = "vulnerable";
 
     updateMode();
-
 });
 
 
-// Switch to Fixed mode
-
+// Fixed Button
 fixedBtn.addEventListener("click", () => {
 
     mode = "fixed";
 
     updateMode();
-
 });
 
 
-// Select payload
-
+// Select Payload
 payloadButtons.forEach(button => {
 
     button.addEventListener("click", () => {
@@ -238,39 +239,34 @@ payloadButtons.forEach(button => {
         button.classList.add("selected");
 
     });
-
 });
 
 
-// Run payload button
-
-document.getElementById("runBtn").addEventListener(
-    "click",
-    runPayload
-);
+// Run Button
+runBtn.addEventListener("click", runPayload);
 
 
-// Another visitor button
-
-document.getElementById("visitorBtn").addEventListener(
-    "click",
-    simulateVisitor
-);
+// Another Visitor Button
+visitorBtn.addEventListener("click", simulateVisitor);
 
 
-// Reset cache button
-
-document.getElementById("resetBtn").addEventListener("click", () => {
+// Reset Button
+resetBtn.addEventListener("click", () => {
 
     cache.clear();
 
     resetPreview();
-
 });
 
 
-// Initial page setup
+// Initial Setup
+payloadCode.textContent = selectedHost;
 
 updateMode();
 
-payloadButtons[0].classList.add("selected");
+payloadButtons.forEach(button => {
+    button.classList.toggle(
+        "selected",
+        button.dataset.host === selectedHost
+    );
+});
