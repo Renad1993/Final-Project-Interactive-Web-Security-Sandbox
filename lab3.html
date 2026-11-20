@@ -1,29 +1,38 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Lab 3 - Web Cache Poisoning</title>
 
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="lab.css">
+    <meta name="description" content="Learn and test Web Cache Poisoning in an interactive security lab.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="lab.css">
 </head>
 
 <body>
 
+    <!-- Navbar -->
     <header class="site-header">
         <div class="wrap">
+
+            <a class="brand" href="index.html"><span></span></a>
+
             <nav class="nav" aria-label="Main">
                 <a href="index.html">Home</a>
                 <a href="lab1.html">Lab 1</a>
                 <a href="lab2.html">Lab 2</a>
                 <a href="lab3.html" aria-current="page">Lab 3</a>
             </nav>
+
         </div>
     </header>
 
@@ -31,11 +40,12 @@
 
         <!-- Lab Title -->
         <section class="lab-hero">
+
             <h1>Web Cache Poisoning</h1>
 
             <p>
-                Learn how an attacker can manipulate cached responses
-                and cause other visitors to receive unexpected content.
+                Learn how attackers manipulate cached responses
+                and cause other visitors to receive unexpected website content.
             </p>
 
             <div class="badges">
@@ -43,12 +53,14 @@
                 <span class="badge cwe">CWE-436</span>
                 <span class="badge capec">CAPEC-141</span>
             </div>
+
         </section>
 
-        <!-- What Is Web Cache Poisoning -->
-        <section class="panel">
 
-            <h2>What Is Web Cache Poisoning?</h2>
+        <!-- 1. What It Is -->
+        <section class="panel" aria-labelledby="what">
+
+            <h2 id="what">01. What Is Web Cache Poisoning?</h2>
 
             <p>
                 Web Cache Poisoning is a security vulnerability that happens
@@ -119,64 +131,49 @@
 
         </section>
 
-        <!-- Vulnerable vs Fixed -->
-        <section class="panel">
 
-            <h2>Vulnerable vs Fixed</h2>
+        <!-- 2. The Vulnerable Line -->
+        <section class="panel" aria-labelledby="line">
 
-            <div class="cols">
+            <h2 id="line">02. The Vulnerable Line</h2>
 
-                <!-- Vulnerable Code -->
-                <div>
-                    <h3 class="lbl">VULNERABLE CODE</h3>
+            <h3 class="lbl">VULNERABLE CODE</h3>
 
-                    <pre class="code v"><code>function vulnerableRequest(host) {
+            <pre class="code v"><code>function vulnerableRequest(host) {
     <span class="danger-line">const key = "/home";</span>
     <span class="danger-line">const response = {host: host};</span>
     <span class="danger-line">cache.set(key, response);</span>
     return response;
 }</code></pre>
 
-                    <p class="note">
-                        <b>Problem:</b>
-                        The application accepts an untrusted host
-                        and stores it in the cache.
-                    </p>
-                </div>
+            <p class="note">
+                <b>Problem:</b>
+                The application accepts an untrusted host value
+                and stores it in the cache.
+            </p>
 
-                <!-- Fixed Code -->
-                <div>
-                    <h3 class="lbl">FIXED CODE</h3>
+            <p>
+                The application uses the same cache key
+                <code>/home</code> for different requests.
+                If an untrusted host is included in the response,
+                the cache may store incorrect content.
+            </p>
 
-                    <pre class="code f"><code>function fixedRequest() {
-    <span class="safe-line">const host = TRUSTED_HOST;</span>
-    const key = "/home";
-    const response = {host: host};
-    <span class="safe-line">cache.set(key, response);</span>
-    return response;
-}</code></pre>
-
-                    <p class="note">
-                        <b>Solution:</b>
-                        The application uses a trusted host
-                        instead of an untrusted value.
-                    </p>
-                </div>
-
-            </div>
         </section>
 
-        <!-- Interactive Demo -->
-        <section class="panel">
 
-            <h2>Try It Yourself</h2>
+        <!-- 3. Interactive Demo -->
+        <section class="panel" aria-labelledby="try">
+
+            <h2 id="try">03. Try It Yourself</h2>
 
             <p>
                 Switch between vulnerable and fixed modes,
-                then test the same example.
+                then test the same example to see how cache poisoning works.
             </p>
 
             <div class="switch">
+
                 <button id="vulnerableBtn" class="v on" type="button">
                     Vulnerable
                 </button>
@@ -184,9 +181,11 @@
                 <button id="fixedBtn" class="f" type="button">
                     Fixed
                 </button>
+
             </div>
 
             <div id="statusBox" class="out mode-status">
+
                 <span id="statusTitle" class="status">
                     VULNERABLE MODE
                 </span>
@@ -194,33 +193,41 @@
                 <p id="statusText">
                     The application trusts an untrusted host value.
                 </p>
+
             </div>
 
             <div class="cols">
 
                 <!-- Payload Selection -->
                 <div>
+
                     <h3 class="lbl">SELECT A PAYLOAD</h3>
 
                     <button class="pl selected"
                             type="button"
                             data-host="attacker.example">
+
                         <small>Payload 01</small>
                         attacker.example
+
                     </button>
 
                     <button class="pl"
                             type="button"
                             data-host="fake-store.example">
+
                         <small>Payload 02</small>
                         fake-store.example
+
                     </button>
 
                     <button class="pl"
                             type="button"
                             data-host="untrusted.example">
+
                         <small>Payload 03</small>
                         untrusted.example
+
                     </button>
 
                     <p class="note">
@@ -239,38 +246,48 @@
                     <button id="resetBtn" class="pl" type="button">
                         Reset
                     </button>
+
                 </div>
 
-                <!-- Result and Website Preview -->
+
+                <!-- Result -->
                 <div>
+
                     <h3 class="lbl">RESULT</h3>
 
                     <div id="resultMessage" class="out">
+
                         <span class="status">WAITING</span>
 
                         <p>
                             Run an example to see the result.
                         </p>
+
                     </div>
 
                     <h3 class="lbl">WEBSITE PREVIEW</h3>
 
                     <div id="domainBanner">
+
                         <h3>TechStore</h3>
 
                         <p>
                             Official Website: techstore.example
                         </p>
+
                     </div>
+
                 </div>
 
             </div>
+
         </section>
 
-        <!-- Why Does It Matter -->
-        <section class="panel">
 
-            <h2>Why Does It Matter?</h2>
+        <!-- 4. Why It Matters -->
+        <section class="panel" aria-labelledby="why">
+
+            <h2 id="why">04. Why Does It Matter?</h2>
 
             <p>
                 Web Cache Poisoning can affect more than one visitor.
@@ -283,27 +300,36 @@
             <div class="cards">
 
                 <div class="card">
+
                     <h3>Misleading Content</h3>
+
                     <p>
                         Visitors may see incorrect information instead
                         of the original website content.
                     </p>
+
                 </div>
 
                 <div class="card">
+
                     <h3>Website Reputation</h3>
+
                     <p>
                         Users may lose trust in a website if they receive
                         unexpected or manipulated content.
                     </p>
+
                 </div>
 
                 <div class="card">
+
                     <h3>Multiple Visitors</h3>
+
                     <p>
                         A single poisoned cached response may affect
                         many visitors who request the same cached page.
                     </p>
+
                 </div>
 
             </div>
@@ -329,10 +355,60 @@
 
         </section>
 
-        <!-- Sources -->
-        <section class="panel sources">
 
-            <h2>Sources</h2>
+        <!-- 5. The Fix -->
+        <section class="panel" aria-labelledby="fix">
+
+            <h2 id="fix">05. How to Prevent Web Cache Poisoning</h2>
+
+            <h3 class="lbl">FIXED CODE</h3>
+
+            <pre class="code f"><code>function fixedRequest() {
+    <span class="safe-line">const host = TRUSTED_HOST;</span>
+    const key = "/home";
+    const response = {host: host};
+    <span class="safe-line">cache.set(key, response);</span>
+    return response;
+}</code></pre>
+
+            <p class="note">
+                <b>Solution:</b>
+                The application uses a trusted host instead of
+                accepting an untrusted value from the request.
+            </p>
+
+            <h3>Prevention Methods</h3>
+
+            <p>
+                <b>1. Validate HTTP Headers:</b>
+                Do not blindly trust values received from HTTP headers.
+            </p>
+
+            <p>
+                <b>2. Use Trusted Host Values:</b>
+                Use a configured and trusted hostname instead of
+                accepting arbitrary host values.
+            </p>
+
+            <p>
+                <b>3. Configure Cache Keys Correctly:</b>
+                Make sure the cache key includes all request values
+                that can change the response.
+            </p>
+
+            <p>
+                <b>4. Avoid Caching Unsafe Responses:</b>
+                Do not cache responses that contain untrusted
+                or user-specific information unless handled safely.
+            </p>
+
+        </section>
+
+
+        <!-- 6. Sources -->
+        <section class="panel sources" aria-labelledby="src">
+
+            <h2 id="src">06. Sources</h2>
 
             <p>
                 <a href="https://portswigger.net/web-security/web-cache-poisoning"
@@ -354,10 +430,14 @@
 
     </main>
 
+
     <!-- Footer -->
-    <footer class="wrap">
-        <p>Ghurir. — Interactive Web Security Sandbox</p>
+    <footer class="site-footer">
+        <div class="wrap">
+            Ghurir. — Interactive Web Security Sandbox
+        </div>
     </footer>
+
 
     <!-- JavaScript -->
     <script src="js/lab3.js" defer></script>
