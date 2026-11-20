@@ -236,11 +236,10 @@
 
       <p class="note">
         <b>Guessable seeds:</b>
-        Using the current timestamp as a seed can also
-        be dangerous.
-        If an attacker knows approximately when a token
-        was generated, they may only need to test
-        a small range of possible seeds.
+        In this demonstration, the LCG uses a fixed seed (`123456789`) to ensure reproducible results. A fixed, known seed makes 
+        the generated sequence predictable from the beginning. Time-based seeds can also be vulnerable because attackers may estimate the initialization 
+        time and test a limited range of possible values. However, even with an unknown seed, exposing the LCG's internal state through a token allows 
+        attackers to predict subsequent tokens.
       </p>
 
       <p class="note">
