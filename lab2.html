@@ -1,14 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Lab 2 | Weak Random Token Generation | Ghurir</title>
+  <title>Weak Random Token Generation</title>
 
   <meta name="description"
-        content="Lab 2: Weak Random Token Generation. Learn how predictable password reset tokens can be exploited and how secure random generation prevents the attack.">
+        content="Lab2: Weak Random Token Generation. Learn how predictable password reset tokens can be exploited and how secure random generation prevents the attack.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,32 +25,26 @@
   <!-- HEADER -->
   <header class="site-header">
     <div class="wrap">
-
-      <a class="brand" href="index.html">
-        Ghurir<span>.</span>
-      </a>
-
+      <a class="brand" href="index.html"><span></span></a>
       <nav class="nav" aria-label="Main">
         <a href="index.html">Home</a>
         <a href="lab1.html">Lab 1</a>
         <a href="lab2.html" aria-current="page">Lab 2</a>
         <a href="lab3.html">Lab 3</a>
       </nav>
-
     </div>
   </header>
-
 
   <main class="wrap">
 
     <!-- LAB INTRODUCTION -->
     <section class="lab-hero">
 
-      <h1>Lab 2: Weak Random Token Generation</h1>
+      <h1>Weak Random Token Generation</h1>
 
       <div class="badges">
-        <span class="badge owasp">OWASP A07:2021</span>
-        <span class="badge cwe">CWE-338</span>
+        <span class="badge owasp">OWASP A02:2021</span>
+        <span class="badge cwe">CWE-330 | CWE-338</span>
       </div>
 
     </section>
@@ -62,34 +55,20 @@
 
       <h2 id="what">What it is</h2>
 
-      <p>
-        Applications use random tokens for password reset links,
-        session IDs, invitation codes, and API keys.
-        These tokens must be unpredictable because anyone
-        who obtains a valid token may be able to access
-        a protected function without knowing the user's password.
+      <p class="note">
+        Applications use secret tokens for password resets, session IDs, invitation codes, and API keys. These tokens must be unpredictable 
+        because anyone who obtains a valid token may gain unauthorized access to a protected function.
       </p>
 
-      <p>
-        A Pseudo-Random Number Generator (PRNG) produces values
-        using a mathematical algorithm, an initial seed,
-        and an internal state.
-        Although the generated values may appear random,
-        a weak generator can produce predictable sequences.
+      <p class="note">
+        A Pseudo-Random Number Generator (PRNG) generates values using a mathematical algorithm, an initial seed, and an internal state. 
+        Although its outputs may appear random, a weak PRNG can produce predictable sequences.
       </p>
 
-      <p>
-        Weak Random Token Generation occurs when an application
-        uses a predictable random number generator to create
-        security-sensitive tokens instead of a
-        Cryptographically Secure Pseudo-Random Number Generator
-        (CSPRNG).
-      </p>
-
-      <p>
-        If an attacker can recover the generator's internal state,
-        they may be able to calculate future tokens rather
-        than guessing them randomly.
+      <p class="note">
+        Weak Random Token Generation occurs when an application uses a predictable generator instead of a Cryptographically Secure Pseudo-Random Number 
+        Generator (CSPRNG). If a token reveals enough information about the generator's internal state, an attacker may predict future tokens and 
+        potentially take over another user's account.
       </p>
 
     </section>
@@ -98,7 +77,7 @@
     <!-- 2. THE LINES -->
     <section class="panel" aria-labelledby="line">
 
-      <h2 id="line">The lines</h2>
+      <h2 id="line">The Vulnerable Code</h2>
 
       <pre
         class="code v"
@@ -114,6 +93,11 @@
         an attacker can calculate the next token.
       </p>
 
+      <p class="note">
+          The generated token is only 32 bits long. However, the main vulnerability is the predictable LCG algorithm, not just the token length. 
+          Even increasing the token length would not make this generator cryptographically secure.
+      </p>
+
     </section>
 
 
@@ -122,7 +106,7 @@
 
       <h2 id="try">Try it</h2>
 
-      <p>
+      <p class="note">
         This simulation demonstrates how an attacker can
         predict a victim's password reset token when
         an application uses a weak random number generator.
@@ -152,7 +136,7 @@
 
           <p class="lbl">PASSWORD RESET SIMULATION</p>
 
-          <p>
+          <p class="note">
             The attacker requests a password reset token
             for their own account.
             A second token is then generated for the victim
@@ -234,14 +218,14 @@
 
       <h2 id="why">Why it matters</h2>
 
-      <p>
+      <p class="note">
         Predictable password reset tokens can lead to
         account takeover.
         An attacker may calculate another user's reset token
         without knowing their password.
       </p>
 
-      <p>
+      <p class="note">
         <b>Attack scenario:</b>
         The attacker requests a password reset token
         for their own account and observes the generated value.
@@ -250,16 +234,15 @@
         that token and use it to reset the victim's password.
       </p>
 
-      <p>
+      <p class="note">
         <b>Guessable seeds:</b>
-        Using the current timestamp as a seed can also
-        be dangerous.
-        If an attacker knows approximately when a token
-        was generated, they may only need to test
-        a small range of possible seeds.
+        In this demonstration, the LCG uses a fixed seed (`123456789`) to ensure reproducible results. A fixed, known seed makes 
+        the generated sequence predictable from the beginning. Time-based seeds can also be vulnerable because attackers may estimate the initialization 
+        time and test a limited range of possible values. However, even with an unknown seed, exposing the LCG's internal state through a token allows 
+        attackers to predict subsequent tokens.
       </p>
 
-      <p>
+      <p class="note">
         <b>Hashing does not solve predictability:</b>
         Hashing a predictable value does not automatically
         make it unpredictable.
@@ -267,7 +250,7 @@
         they can calculate its hash as well.
       </p>
 
-      <p>
+      <p class="note">
         <b>Real-world examples:</b>
         The Debian OpenSSL vulnerability (CVE-2008-0166)
         reduced the number of possible cryptographic keys.
@@ -290,21 +273,6 @@
         Generator (CSPRNG).
       </p>
 
-      <div class="switch"
-           role="group"
-           aria-label="Code version">
-
-        <button class="v on" type="button">
-          Vulnerable
-        </button>
-
-        <button class="f" type="button">
-          Fixed
-        </button>
-
-      </div>
-
-
       <pre
         class="code f"
         id="code-fix"
@@ -320,14 +288,15 @@
         a predictable LCG state.
       </p>
 
-      <p>
+      <h3>Additional Security Recommendations</h3>
+      <p class="note">
         Security-sensitive tokens should contain at least
         128 bits of unpredictable randomness,
         expire after a limited period,
         and be valid for only one use.
       </p>
 
-      <p>
+      <p class="note">
         Password reset tokens should be stored securely,
         preferably as hashes, and reset requests
         should be rate-limited to reduce abuse.
