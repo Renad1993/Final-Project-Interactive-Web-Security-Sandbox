@@ -1,4 +1,3 @@
-
 "use strict";
 
 // Lab 2: Weak Random Token Generation
@@ -17,11 +16,11 @@
 var weakState = 123456789;
 
 function generateVulnerableToken() {
-  weakState = (
-    Math.imul(weakState, 1664525) + 1013904223
+  weakState = ( //!
+    Math.imul(weakState, 1664525) + 1013904223 //!
   ) >>> 0; //!
 
-  return weakState.toString(16).padStart(8, "0");
+  return weakState.toString(16).padStart(8, "0"); //!
 }
 
 // Fixed: Cryptographically Secure PRNG (CSPRNG)
