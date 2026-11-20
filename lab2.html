@@ -55,34 +55,20 @@
 
       <h2 id="what">What it is</h2>
 
-      <p>
-        Applications use random tokens for password reset links,
-        session IDs, invitation codes, and API keys.
-        These tokens must be unpredictable because anyone
-        who obtains a valid token may be able to access
-        a protected function without knowing the user's password.
+      <p class="note">
+        Applications use secret tokens for password resets, session IDs, invitation codes, and API keys. These tokens must be unpredictable 
+        because anyone who obtains a valid token may gain unauthorized access to a protected function.
       </p>
 
-      <p>
-        A Pseudo-Random Number Generator (PRNG) produces values
-        using a mathematical algorithm, an initial seed,
-        and an internal state.
-        Although the generated values may appear random,
-        a weak generator can produce predictable sequences.
+      <p class="note">
+        A Pseudo-Random Number Generator (PRNG) generates values using a mathematical algorithm, an initial seed, and an internal state. 
+        Although its outputs may appear random, a weak PRNG can produce predictable sequences.
       </p>
 
-      <p>
-        Weak Random Token Generation occurs when an application
-        uses a predictable random number generator to create
-        security-sensitive tokens instead of a
-        Cryptographically Secure Pseudo-Random Number Generator
-        (CSPRNG).
-      </p>
-
-      <p>
-        If an attacker can recover the generator's internal state,
-        they may be able to calculate future tokens rather
-        than guessing them randomly.
+      <p class="note">
+        Weak Random Token Generation occurs when an application uses a predictable generator instead of a Cryptographically Secure Pseudo-Random Number 
+        Generator (CSPRNG). If a token reveals enough information about the generator's internal state, an attacker may predict future tokens and 
+        potentially take over another user's account.
       </p>
 
     </section>
@@ -120,7 +106,7 @@
 
       <h2 id="try">Try it</h2>
 
-      <p>
+      <p class="note">
         This simulation demonstrates how an attacker can
         predict a victim's password reset token when
         an application uses a weak random number generator.
@@ -150,7 +136,7 @@
 
           <p class="lbl">PASSWORD RESET SIMULATION</p>
 
-          <p>
+          <p class="note">
             The attacker requests a password reset token
             for their own account.
             A second token is then generated for the victim
@@ -232,14 +218,14 @@
 
       <h2 id="why">Why it matters</h2>
 
-      <p>
+      <p class="note">
         Predictable password reset tokens can lead to
         account takeover.
         An attacker may calculate another user's reset token
         without knowing their password.
       </p>
 
-      <p>
+      <p class="note">
         <b>Attack scenario:</b>
         The attacker requests a password reset token
         for their own account and observes the generated value.
@@ -248,7 +234,7 @@
         that token and use it to reset the victim's password.
       </p>
 
-      <p>
+      <p class="note">
         <b>Guessable seeds:</b>
         Using the current timestamp as a seed can also
         be dangerous.
@@ -257,7 +243,7 @@
         a small range of possible seeds.
       </p>
 
-      <p>
+      <p class="note">
         <b>Hashing does not solve predictability:</b>
         Hashing a predictable value does not automatically
         make it unpredictable.
@@ -265,7 +251,7 @@
         they can calculate its hash as well.
       </p>
 
-      <p>
+      <p class="note">
         <b>Real-world examples:</b>
         The Debian OpenSSL vulnerability (CVE-2008-0166)
         reduced the number of possible cryptographic keys.
