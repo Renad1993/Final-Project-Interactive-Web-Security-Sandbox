@@ -16,4 +16,4 @@
 3. Prototype Pollution
 
 ## Live Demo URL
-https://github.com/Renad1993/Final-Project-Interactive-Web-Security-Sandbox/deployments/github-pages
+https://renad1993.github.io/Final-Project-Interactive-Web-Security-Sandbox/
