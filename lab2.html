@@ -43,8 +43,8 @@
       <h1>Weak Random Token Generation</h1>
 
       <div class="badges">
-        <span class="badge owasp">OWASP A07:2021</span>
-        <span class="badge cwe">CWE-338</span>
+        <span class="badge owasp">OWASP A02:2021</span>
+        <span class="badge cwe">CWE-330 | CWE-338</span>
       </div>
 
     </section>
@@ -91,7 +91,7 @@
     <!-- 2. THE LINES -->
     <section class="panel" aria-labelledby="line">
 
-      <h2 id="line">The lines</h2>
+      <h2 id="line">The Vulnerable Code</h2>
 
       <pre
         class="code v"
@@ -105,6 +105,11 @@
         previous state using a known mathematical formula.
         When the token directly exposes the internal state,
         an attacker can calculate the next token.
+      </p>
+
+      <p class="note">
+          The generated token is only 32 bits long. However, the main vulnerability is the predictable LCG algorithm, not just the token length. 
+          Even increasing the token length would not make this generator cryptographically secure.
       </p>
 
     </section>
@@ -298,14 +303,15 @@
         a predictable LCG state.
       </p>
 
-      <p>
+      <h3>Additional Security Recommendations</h3>
+      <p class="note">
         Security-sensitive tokens should contain at least
         128 bits of unpredictable randomness,
         expire after a limited period,
         and be valid for only one use.
       </p>
 
-      <p>
+      <p class="note">
         Password reset tokens should be stored securely,
         preferably as hashes, and reset requests
         should be rate-limited to reduce abuse.
