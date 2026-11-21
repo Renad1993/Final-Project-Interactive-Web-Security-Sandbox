@@ -40,12 +40,12 @@
       <h2 id="what">What it is</h2>
       <p>In JavaScript, every object copies missing properties from one shared template called the prototype. If an app merges user JSON into an object without checking the keys, an attacker can write into that shared template. From then on, every object in the program inherits the attacker’s values.</p>
     </section> 
- <!-- 2. Why it matters -->
+ <!-- 2. Why it matters 
     <section class="panel" aria-labelledby="why">
       <h2 id="why">Why it matters</h2>
       <p>One request can change a flag such as <code>isAdmin</code> for every user at once. That can open admin pages, skip permission checks, or c>
       <p>Real cases: in 2019 the popular lodash library had this bug in its <code>defaultsDeep</code> function (CVE-2019-10744), and jQuery had it >
-    </section>
+    </section> -->
 
     <!-- 3. The line -->
     <section class="panel" aria-labelledby="line">
@@ -75,12 +75,12 @@
     </section>
 
     <!-- 4. Why it matters -->
-    <!--
+    
     <section class="panel" aria-labelledby="why">
       <h2 id="why">Why it matters</h2>
       <p>One request can change a flag such as <code>isAdmin</code> for every user at once. That can open admin pages, skip permission checks, or crash the app, and in some apps it can lead to running attacker code on the server.</p>
       <p>Real cases: in 2019 the popular lodash library had this bug in its <code>defaultsDeep</code> function (CVE-2019-10744), and jQuery had it in <code>$.extend</code> (CVE-2019-11358).</p>
-    </section> --> 
+    </section>  
 
     <!-- 5. The fix -->
 
