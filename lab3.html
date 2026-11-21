@@ -36,6 +36,7 @@
         </div>
     </header>
 
+
     <main class="wrap">
 
         <!-- Lab Title -->
@@ -49,7 +50,7 @@
             </p>
 
             <div class="badges">
-                <span class="badge owasp">OWASP A05 </span>
+                <span class="badge owasp">OWASP A05</span>
                 <span class="badge cwe">CWE-436</span>
             </div>
 
@@ -59,116 +60,72 @@
         <!-- 1. What It Is -->
         <section class="panel" aria-labelledby="what">
 
-            <h2 id="what">01. What Is Web Cache Poisoning?</h2>
+            <h2 id="what">01. What It Is</h2>
 
             <p>
-                Web Cache Poisoning is a security vulnerability that happens
-                when an attacker causes a web application or cache to store
-                an incorrect or manipulated response.
+                Web Cache Poisoning occurs when an application uses untrusted
+                request data to generate a response that is stored in a shared cache.
+                Other visitors may then receive the manipulated response instead
+                of the correct website content.
             </p>
 
             <p>
-                A web cache stores copies of website responses to make pages
-                load faster. Instead of generating the same response every time,
-                the server can return a previously stored response.
-            </p>
-
-            <h3>How Does It Happen?</h3>
-
-            <div class="steps">
-
-                <div class="step">
-                    <h3>01. Send Request</h3>
-                    <p>
-                        An attacker sends a request containing an untrusted
-                        HTTP header, such as X-Forwarded-Host.
-                    </p>
-                </div>
-
-                <div class="step">
-                    <h3>02. Cache Stores Response</h3>
-                    <p>
-                        The application trusts the untrusted value and generates
-                        a response using it. The cache stores that response.
-                    </p>
-                </div>
-
-                <div class="step">
-                    <h3>03. Other Visitors</h3>
-                    <p>
-                        Other visitors may receive the manipulated response
-                        from the cache instead of the correct website content.
-                    </p>
-                </div>
-
-            </div>
-
-            <h3>Important Terms</h3>
-
-            <p>
-                <b>Web Cache:</b>
-                A system that temporarily stores website responses
-                to improve performance.
+                <b>OWASP Category:</b>
+                A05 - Security Misconfiguration
             </p>
 
             <p>
-                <b>HTTP Request:</b>
-                A message sent by a browser to a web server.
-            </p>
-
-            <p>
-                <b>Cache Poisoning:</b>
-                When an incorrect response is stored and later
-                returned to other visitors.
-            </p>
-
-            <p>
-                <b>Untrusted Header:</b>
-                Request information that should not automatically
-                be trusted by the application.
+                <b>CWE:</b>
+                CWE-436 - Interpretation Conflict
             </p>
 
         </section>
 
 
-        <!-- 2. The Vulnerable Line -->
+        <!-- 2. The Line -->
         <section class="panel" aria-labelledby="line">
 
-            <h2 id="line">02. The Vulnerable Line</h2>
+            <h2 id="line">02. The Line</h2>
 
             <h3 class="lbl">VULNERABLE CODE</h3>
 
-            <pre class="code v"><code>function vulnerableRequest(host) {
-    <span class="danger-line">const key = "/home";</span>
-    <span class="danger-line">const response = {host: host};</span>
-    <span class="danger-line">cache.set(key, response);</span>
+            <pre class="code v"><code>function vulnerableRequest(request) {
+    const key = "/home";
+    const host = request.headers["x-forwarded-host"];
+    const response = {
+        page: "TechStore",
+        <span class="danger-line">canonicalUrl: `https://${host}/home`,</span>
+        message: "Welcome to TechStore"
+    };
+    cache.set(key, response);
     return response;
 }</code></pre>
 
             <p class="note">
-                <b>Problem:</b>
-                The application accepts an untrusted host value
-                and stores it in the cache.
+                <b>Vulnerable Line:</b>
+                The application uses an untrusted HTTP header to generate
+                a URL inside the response without validating it.
+                The cache may then store that response.
             </p>
 
             <p>
-                The application uses the same cache key
-                <code>/home</code> for different requests.
-                If an untrusted host is included in the response,
-                the cache may store incorrect content.
+                The cache uses the same key for the homepage.
+                If the response changes based on a request value,
+                the cache must handle that difference correctly.
             </p>
 
         </section>
 
 
-        <!-- 3. Interactive Demo -->
+        <!-- 3. Try It -->
         <section class="panel" aria-labelledby="try">
 
-            <h2 id="try">03. Try It Yourself</h2>
+            <h2 id="try">03. Try It</h2>
 
             <p>
-                Switch between vulnerable and fixed modes,
-                then test the same example to see how cache poisoning works.
+                Switch between vulnerable and fixed modes.
+                Select a payload and run the example to see how
+                another visitor receives the cached response.
             </p>
 
             <div class="switch">
@@ -239,7 +196,7 @@
                     </button>
 
                     <button id="visitorBtn" class="pl" type="button">
-                        Test Another Visitor
+                        Open Homepage as Another Visitor
                     </button>
 
                     <button id="resetBtn" class="pl" type="button">
@@ -286,12 +243,11 @@
         <!-- 4. Why It Matters -->
         <section class="panel" aria-labelledby="why">
 
-            <h2 id="why">04. Why Does It Matter?</h2>
+            <h2 id="why">04. Why It Matters</h2>
 
             <p>
-                Web Cache Poisoning can affect more than one visitor.
-                When a manipulated response is stored in a shared cache,
-                multiple users may receive incorrect website content.
+                A poisoned response stored in a shared cache may affect
+                multiple visitors who request the same cached page.
             </p>
 
             <h3>Possible Impacts</h3>
@@ -303,8 +259,8 @@
                     <h3>Misleading Content</h3>
 
                     <p>
-                        Visitors may see incorrect information instead
-                        of the original website content.
+                        Visitors may see incorrect information or links
+                        instead of the original website content.
                     </p>
 
                 </div>
@@ -325,31 +281,21 @@
                     <h3>Multiple Visitors</h3>
 
                     <p>
-                        A single poisoned cached response may affect
-                        many visitors who request the same cached page.
+                        One poisoned cached response may be delivered
+                        to several visitors.
                     </p>
 
                 </div>
 
             </div>
 
-            <h3>Real-World Example</h3>
+            <h3>Example Scenario</h3>
 
             <p>
                 Imagine an online store called TechStore.
-                An attacker manipulates a request so that the application
-                generates a response containing an unexpected website host.
-            </p>
-
-            <p>
-                If this response is stored in a shared cache,
-                another visitor may receive the manipulated version
+                If a manipulated response is stored in its shared cache,
+                another visitor may receive incorrect links or content
                 when opening the same page.
-            </p>
-
-            <p>
-                This can make visitors see content that does not belong
-                to the official website.
             </p>
 
         </section>
@@ -358,22 +304,27 @@
         <!-- 5. The Fix -->
         <section class="panel" aria-labelledby="fix">
 
-            <h2 id="fix">05. How to Prevent Web Cache Poisoning</h2>
+            <h2 id="fix">05. The Fix</h2>
 
             <h3 class="lbl">FIXED CODE</h3>
 
             <pre class="code f"><code>function fixedRequest() {
     <span class="safe-line">const host = TRUSTED_HOST;</span>
     const key = "/home";
-    const response = {host: host};
-    <span class="safe-line">cache.set(key, response);</span>
+    const response = {
+        page: "TechStore",
+        canonicalUrl: `https://${host}/home`,
+        message: "Welcome to TechStore"
+    };
+    cache.set(key, response);
     return response;
 }</code></pre>
 
             <p class="note">
                 <b>Solution:</b>
-                The application uses a trusted host instead of
-                accepting an untrusted value from the request.
+                The application uses a trusted host configured by the
+                application instead of accepting an arbitrary host
+                value from the request.
             </p>
 
             <h3>Prevention Methods</h3>
@@ -391,14 +342,15 @@
 
             <p>
                 <b>3. Configure Cache Keys Correctly:</b>
-                Make sure the cache key includes all request values
+                Make sure the cache key accounts for request values
                 that can change the response.
             </p>
 
             <p>
                 <b>4. Avoid Caching Unsafe Responses:</b>
-                Do not cache responses that contain untrusted
-                or user-specific information unless handled safely.
+                Do not cache responses containing sensitive or
+                user-specific information in a shared cache unless
+                they are handled safely.
             </p>
 
         </section>
@@ -418,10 +370,18 @@
             </p>
 
             <p>
-                <a href="https://owasp.org/"
+                <a href="https://owasp.org/Top10/A05_2021-Security_Misconfiguration/"
                    target="_blank"
                    rel="noopener">
-                    OWASP
+                    OWASP A05 - Security Misconfiguration
+                </a>
+            </p>
+
+            <p>
+                <a href="https://cwe.mitre.org/data/definitions/436.html"
+                   target="_blank"
+                   rel="noopener">
+                    MITRE CWE-436 - Interpretation Conflict
                 </a>
             </p>
 

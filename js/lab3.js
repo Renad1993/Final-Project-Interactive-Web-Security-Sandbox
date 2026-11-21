@@ -25,9 +25,40 @@ const visitorBtn = document.getElementById("visitorBtn");
 const resetBtn = document.getElementById("resetBtn");
 
 
+// Display a message safely
+function setMessage(element, title, message) {
+    const status = document.createElement("span");
+    status.className = "status";
+    status.textContent = title;
+
+    const paragraph = document.createElement("p");
+    paragraph.textContent = message;
+
+    element.replaceChildren(status, paragraph);
+}
+
+
+// Reset Website Preview
+function resetPreview() {
+    const title = document.createElement("h3");
+    title.textContent = "TechStore";
+
+    const paragraph = document.createElement("p");
+    paragraph.textContent = `Official Website: ${TRUSTED_HOST}`;
+
+    domainBanner.replaceChildren(title, paragraph);
+    domainBanner.classList.remove("poisoned");
+
+    setMessage(
+        resultMessage,
+        "WAITING",
+        "Run a payload to see the result."
+    );
+}
+
+
 // Update Mode
 function updateMode() {
-
     const isVulnerable = mode === "vulnerable";
 
     vulnerableBtn.classList.toggle("active", isVulnerable);
@@ -49,31 +80,12 @@ function updateMode() {
         : "The application uses a trusted host and ignores the untrusted value.";
 
     cache.clear();
-
     resetPreview();
-}
-
-
-// Reset Preview
-function resetPreview() {
-
-    domainBanner.innerHTML = `
-        <h3>TechStore</h3>
-        <p>Official Website: ${TRUSTED_HOST}</p>
-    `;
-
-    domainBanner.classList.remove("poisoned");
-
-    resultMessage.innerHTML = `
-        <span class="status">WAITING</span>
-        <p>Run a payload to see the result.</p>
-    `;
 }
 
 
 // Vulnerable Request
 function vulnerableRequest(host) {
-
     const cacheKey = "/home";
 
     if (cache.has(cacheKey)) {
@@ -93,10 +105,8 @@ function vulnerableRequest(host) {
 
 // Fixed Request
 function fixedRequest() {
-
     const safeHost = TRUSTED_HOST;
-
-    const cacheKey = "/home|" + safeHost;
+    const cacheKey = "/home";
 
     if (cache.has(cacheKey)) {
         return cache.get(cacheKey);
@@ -115,48 +125,65 @@ function fixedRequest() {
 
 // Display Result
 function showResult(response) {
-
     if (response.poisoned) {
+        const title = document.createElement("h3");
+        title.textContent = "Unexpected Website!";
 
-        domainBanner.innerHTML = `
-            <h3>Unexpected Website!</h3>
-            <p>Host: ${response.host}</p>
-            <p>Cached content was manipulated.</p>
-        `;
+        const hostParagraph = document.createElement("p");
+        hostParagraph.textContent = `Host: ${response.host}`;
+
+        const messageParagraph = document.createElement("p");
+        messageParagraph.textContent = "Cached content was manipulated.";
+
+        domainBanner.replaceChildren(
+            title,
+            hostParagraph,
+            messageParagraph
+        );
 
         domainBanner.classList.add("poisoned");
 
-        resultMessage.innerHTML = `
-            <span class="status">CACHE POISONED!</span>
-            <p>The manipulated response was stored in the cache.</p>
-        `;
+        setMessage(
+            resultMessage,
+            "CACHE POISONED!",
+            "The manipulated response was stored in the cache."
+        );
 
     } else {
+        resetWebsitePreview();
 
-        domainBanner.innerHTML = `
-            <h3>TechStore</h3>
-            <p>Official Website: ${TRUSTED_HOST}</p>
-        `;
-
-        domainBanner.classList.remove("poisoned");
-
-        resultMessage.innerHTML = mode === "fixed"
-            ? `
-                <span class="status">BLOCKED!</span>
-                <p>The untrusted host was ignored. The official website is safe.</p>
-            `
-            : `
-                <span class="status">SAFE RESPONSE</span>
-                <p>The official website was returned.</p>
-            `;
+        if (mode === "fixed") {
+            setMessage(
+                resultMessage,
+                "BLOCKED!",
+                "The untrusted host was ignored. The official website is safe."
+            );
+        } else {
+            setMessage(
+                resultMessage,
+                "SAFE RESPONSE",
+                "The official website was returned."
+            );
+        }
     }
+}
+
+
+// Show Official Website
+function resetWebsitePreview() {
+    const title = document.createElement("h3");
+    title.textContent = "TechStore";
+
+    const paragraph = document.createElement("p");
+    paragraph.textContent = `Official Website: ${TRUSTED_HOST}`;
+
+    domainBanner.replaceChildren(title, paragraph);
+    domainBanner.classList.remove("poisoned");
 }
 
 
 // Run Selected Payload
 function runPayload() {
-
-    // Start a fresh test for every selected payload
     cache.clear();
 
     const response = mode === "vulnerable"
@@ -169,17 +196,14 @@ function runPayload() {
 
 // Test Another Visitor
 function simulateVisitor() {
-
-    const cacheKey = mode === "vulnerable"
-        ? "/home"
-        : "/home|" + TRUSTED_HOST;
+    const cacheKey = "/home";
 
     if (!cache.has(cacheKey)) {
-
-        resultMessage.innerHTML = `
-            <span class="status">NO CACHE</span>
-            <p>Run a payload first.</p>
-        `;
+        setMessage(
+            resultMessage,
+            "NO CACHE",
+            "Run a payload first."
+        );
 
         return;
     }
@@ -189,45 +213,38 @@ function simulateVisitor() {
     showResult(response);
 
     if (response.poisoned) {
-
-        resultMessage.innerHTML = `
-            <span class="status">ANOTHER VISITOR AFFECTED!</span>
-            <p>Another visitor received the manipulated cached response.</p>
-        `;
-
+        setMessage(
+            resultMessage,
+            "ANOTHER VISITOR AFFECTED!",
+            "Another visitor received the manipulated cached response."
+        );
     } else {
-
-        resultMessage.innerHTML = `
-            <span class="status">SAFE VISITOR</span>
-            <p>Another visitor received the official cached website.</p>
-        `;
+        setMessage(
+            resultMessage,
+            "SAFE VISITOR",
+            "Another visitor received the official cached website."
+        );
     }
 }
 
 
 // Vulnerable Button
 vulnerableBtn.addEventListener("click", () => {
-
     mode = "vulnerable";
-
     updateMode();
 });
 
 
 // Fixed Button
 fixedBtn.addEventListener("click", () => {
-
     mode = "fixed";
-
     updateMode();
 });
 
 
 // Select Payload
 payloadButtons.forEach(button => {
-
     button.addEventListener("click", () => {
-
         selectedHost = button.dataset.host;
 
         payloadCode.textContent = selectedHost;
@@ -237,7 +254,6 @@ payloadButtons.forEach(button => {
         });
 
         button.classList.add("selected");
-
     });
 });
 
@@ -252,9 +268,7 @@ visitorBtn.addEventListener("click", simulateVisitor);
 
 // Reset Button
 resetBtn.addEventListener("click", () => {
-
     cache.clear();
-
     resetPreview();
 });
 
