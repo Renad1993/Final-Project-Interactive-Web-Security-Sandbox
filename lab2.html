@@ -56,19 +56,18 @@
       <h2 id="what">What it is</h2>
 
       <p class="note">
-        Applications use secret tokens for password resets, session IDs, invitation codes, and API keys. These tokens must be unpredictable 
-        because anyone who obtains a valid token may gain unauthorized access to a protected function.
+        Applications use secret tokens for password resets, session IDs, invitation codes, and API keys, which must be unpredictable to prevent 
+        unauthorized access.
       </p>
 
       <p class="note">
-        A Pseudo-Random Number Generator (PRNG) generates values using a mathematical algorithm, an initial seed, and an internal state. 
-        Although its outputs may appear random, a weak PRNG can produce predictable sequences.
+        Weak Random Token Generation occurs when these tokens are created using a predictable Pseudo-Random Number Generator (PRNG) instead of 
+        a Cryptographically Secure PRNG (CSPRNG). 
       </p>
 
       <p class="note">
-        Weak Random Token Generation occurs when an application uses a predictable generator instead of a Cryptographically Secure Pseudo-Random Number 
-        Generator (CSPRNG). If a token reveals enough information about the generator's internal state, an attacker may predict future tokens and 
-        potentially take over another user's account.
+        Since weak PRNGs may produce predictable sequences, attackers can potentially infer the generator's internal state from its outputs and use it 
+        to predict future tokens.
       </p>
 
     </section>
@@ -76,7 +75,7 @@
     <!-- 2. THE LINES -->
     <section class="panel" aria-labelledby="line">
 
-      <h2 id="line">The Vulnerable Code</h2>
+      <h2 id="line">The Line</h2>
 
       <pre
         class="code v"
@@ -217,44 +216,14 @@
       <h2 id="why">Why it matters</h2>
 
       <p class="note">
-        Predictable password reset tokens can lead to
-        account takeover.
-        An attacker may calculate another user's reset token
-        without knowing their password.
+       One predicted password-reset token can be enough to take over a victim's account without knowing their password. This can expose private data, 
+       allow unauthorized actions, and compromise account security.
       </p>
 
       <p class="note">
-        <b>Attack scenario:</b>
-        The attacker requests a password reset token
-        for their own account and observes the generated value.
-        If the generator is predictable and the next token
-        belongs to the victim, the attacker may calculate
-        that token and use it to reset the victim's password.
-      </p>
-
-      <p class="note">
-        <b>Guessable seeds:</b>
-        In this demonstration, the LCG uses a fixed seed (`123456789`) to ensure reproducible results. A fixed, known seed makes
-        the generated sequence predictable from the beginning. Time-based seeds can also be vulnerable because attackers may estimate the initialization
-        time and test a limited range of possible values. However, even with an unknown seed, exposing the LCG's internal state through a token allows
-        attackers to predict subsequent tokens.
-      </p>
-
-      <p class="note">
-        <b>Hashing does not solve predictability:</b>
-        Hashing a predictable value does not automatically
-        make it unpredictable.
-        If an attacker can determine the original input,
-        they can calculate its hash as well.
-      </p>
-
-      <p class="note">
-        <b>Real-world examples:</b>
-        The Debian OpenSSL vulnerability (CVE-2008-0166)
-        reduced the number of possible cryptographic keys.
-        Android's 2013 SecureRandom issue also demonstrated
-        the consequences of weak randomness in
-        security-sensitive operations.
+        <b>Real-world case:</b>
+         In 2008, the Debian OpenSSL vulnerability (CVE-2008-0166) revealed that weak randomness had made cryptographic keys predictable, putting 
+         affected systems at risk of unauthorized access.
       </p>
 
     </section>

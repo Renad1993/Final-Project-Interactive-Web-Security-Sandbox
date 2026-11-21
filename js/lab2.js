@@ -16,11 +16,11 @@
 var weakState = 123456789;
 
 function generateVulnerableToken() {
-  weakState = ( //!
-    Math.imul(weakState, 1664525) + 1013904223 //!
-  ) >>> 0; //!
-
-  return weakState.toString(16).padStart(8, "0"); //!
+  const multiplier = 1664525;
+  const increment = 1013904223;
+  weakState = (Math.imul(weakState, multiplier) + increment) >>> 0; //!
+  const hexToken = weakState.toString(16);
+  return hexToken.padStart(8, "0"); 
 }
 
 // Fixed: Cryptographically Secure PRNG (CSPRNG)
@@ -56,8 +56,9 @@ function esc(s) {
 // Show the actual function source code.
 // Highlight the line marked with "//!".
 
-function showCode(el, fn) {
-  el.innerHTML = fn.toString().split("\n").map(function (line) {
+function showCode(el, fn, prefix = "") {
+  const source = prefix + fn.toString();
+  el.innerHTML = source.split("\n").map(function (line) {
     var hl = line.indexOf("//!") > -1;
 
     return "<div" + (hl ? ' class="hl"' : "") + ">" +
@@ -323,7 +324,8 @@ document.getElementById("reset-lab").onclick =
 
 showCode(
   document.getElementById("code-vuln"),
-  generateVulnerableToken
+  generateVulnerableToken,
+  "var weakState = 123456789;\n\n"
 );
 
 showCode(
