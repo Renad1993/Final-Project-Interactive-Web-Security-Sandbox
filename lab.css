@@ -82,4 +82,14 @@
 
 .sources a { color: var(--cwe); text-decoration: underline; }
 
+.weak-token-result {
+    transform: translateY(77px);
+}
+
+@media (max-width: 720px) {
+    .weak-token-result {
+        transform: none;
+    }
+}
 @media (max-width: 720px) { .cols { grid-template-columns: 1fr; } }
+

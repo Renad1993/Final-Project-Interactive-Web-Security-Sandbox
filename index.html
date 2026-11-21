@@ -10,9 +10,11 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  
 
   <header class="site-header">
     <div class="wrap">
+      <a class="brand" href="index.html"><span>0xPatchers</span></a>
       <nav class="nav" aria-label="Main">
         
         
@@ -63,14 +65,14 @@
       <h2 id="labs-title">The labs</h2>
       <div class="cards">
 
-        <!-- TODO: owner of Lab 1 fills title, summary, badges -->
+        
         <a class="card" href="lab1.html">
           <span class="lab-no">LAB 1</span>
           <h3>Prototype Pollution</h3>
           <p>An attacker modifies JavaScript object properties, potentially changing how the application behaves.</p>
           <div class="badges">
-            <span class="badge owasp">OWASP A0X</span>
-            <span class="badge cwe">CWE-XXX</span>
+            <span class="badge owasp">OWASP A08</span>
+            <span class="badge cwe">CWE-1321</span>
           </div>
           <span class="open">Open lab &rarr;</span>
         </a>
@@ -80,20 +82,20 @@
           <h3>Weak Random Token Generation</h3>
           <p>The application generates predictable random values, making them easier for attackers to guess.</p>
           <div class="badges">
-            <span class="badge owasp">OWASP A08</span>
-            <span class="badge cwe">CWE-1321</span>
+            <span class="badge owasp">OWASP A02:2021</span>
+            <span class="badge cwe">CWE-330 | CWE-338</span>
           </div>
           <span class="open">Open lab &rarr;</span>
         </a>
 
-        <!-- TODO: owner of Lab 3 fills title, summary, badges -->
+        
         <a class="card" href="lab3.html">
           <span class="lab-no">LAB 3</span>
-          <h3>Web Cashe Poisoning</h3>
+          <h3>Web Cache Poisoning</h3>
           <p>An attacker manipulates cached content so other users may receive a harmful or modified response.</p>
           <div class="badges">
-            <span class="badge owasp">OWASP A05</span>
-            <span class="badge cwe">CWE-430</span>
+<span class="badge owasp">OWASP A05</span>
+<span class="badge cwe">CWE-436</span>
           </div>
           <span class="open">Open lab &rarr;</span>
         </a>

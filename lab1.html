@@ -39,16 +39,22 @@
     <section class="panel" aria-labelledby="what">
       <h2 id="what">What it is</h2>
       <p>In JavaScript, every object copies missing properties from one shared template called the prototype. If an app merges user JSON into an object without checking the keys, an attacker can write into that shared template. From then on, every object in the program inherits the attacker’s values.</p>
+    </section> 
+ <!-- 2. Why it matters -->
+    <section class="panel" aria-labelledby="why">
+      <h2 id="why">Why it matters</h2>
+      <p>One request can change a flag such as <code>isAdmin</code> for every user at once. That can open admin pages, skip permission checks, or c>
+      <p>Real cases: in 2019 the popular lodash library had this bug in its <code>defaultsDeep</code> function (CVE-2019-10744), and jQuery had it >
     </section>
 
-    <!-- 2. The line -->
+    <!-- 3. The line -->
     <section class="panel" aria-labelledby="line">
       <h2 id="line">The line</h2>
       <pre class="code v" id="code-vuln" aria-label="Vulnerable code"></pre>
       <p class="note"><b>Highlighted:</b> the merge follows any key the visitor sends, including <code>__proto__</code>, so it writes into the shared template instead of the user’s own settings.</p>
     </section>
 
-    <!-- 3. Try it -->
+    <!-- 4. Try it -->
     <section class="panel" aria-labelledby="try">
       <h2 id="try">Try it</h2>
       <div class="switch" role="group" aria-label="Code version">
@@ -69,16 +75,17 @@
     </section>
 
     <!-- 4. Why it matters -->
+    <!--
     <section class="panel" aria-labelledby="why">
       <h2 id="why">Why it matters</h2>
       <p>One request can change a flag such as <code>isAdmin</code> for every user at once. That can open admin pages, skip permission checks, or crash the app, and in some apps it can lead to running attacker code on the server.</p>
       <p>Real cases: in 2019 the popular lodash library had this bug in its <code>defaultsDeep</code> function (CVE-2019-10744), and jQuery had it in <code>$.extend</code> (CVE-2019-11358).</p>
-    </section>
+    </section> --> 
 
     <!-- 5. The fix -->
 
     <section class="panel" aria-labelledby="fix">
-      <h2 id="fix">The fix</h2>
+      <h2 id="fix">The Fix</h2>
       <div class="switch" role="group" aria-label="Code version">
         <!-- <button class="v on" type="button">Vulnerable</button><button class="f" type="button">Fixed</button>-->
       </div>

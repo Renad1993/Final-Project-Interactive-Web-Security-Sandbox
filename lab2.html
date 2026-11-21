@@ -73,7 +73,6 @@
 
     </section>
 
-
     <!-- 2. THE LINES -->
     <section class="panel" aria-labelledby="line">
 
@@ -190,7 +189,7 @@
 
 
         <!-- RESULTS -->
-        <div>
+        <div class="weak-token-result">
 
           <p class="lbl">RESULT</p>
 
@@ -211,8 +210,7 @@
       </div>
 
     </section>
-
-
+    
     <!-- 4. WHY IT MATTERS -->
     <section class="panel" aria-labelledby="why">
 
@@ -236,9 +234,9 @@
 
       <p class="note">
         <b>Guessable seeds:</b>
-        In this demonstration, the LCG uses a fixed seed (`123456789`) to ensure reproducible results. A fixed, known seed makes 
-        the generated sequence predictable from the beginning. Time-based seeds can also be vulnerable because attackers may estimate the initialization 
-        time and test a limited range of possible values. However, even with an unknown seed, exposing the LCG's internal state through a token allows 
+        In this demonstration, the LCG uses a fixed seed (`123456789`) to ensure reproducible results. A fixed, known seed makes
+        the generated sequence predictable from the beginning. Time-based seeds can also be vulnerable because attackers may estimate the initialization
+        time and test a limited range of possible values. However, even with an unknown seed, exposing the LCG's internal state through a token allows
         attackers to predict subsequent tokens.
       </p>
 
@@ -260,7 +258,6 @@
       </p>
 
     </section>
-
 
     <!-- 5. THE FIX -->
     <section class="panel" aria-labelledby="fix">
